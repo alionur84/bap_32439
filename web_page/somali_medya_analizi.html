@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Türkiye'nin Somali Politikasında Mesaj Analizi</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Source+Sans+3:wght@300;400;600&display=swap');
+
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #222636;
+    --border: #2e3347;
+    --accent: #c8974a;
+    --accent2: #5e8fde;
+    --accent3: #5ec499;
+    --text: #e8e4dc;
+    --muted: #8a8fa8;
+    --danger: #de5e5e;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Source Sans 3', sans-serif;
+    font-weight: 300;
+    line-height: 1.7;
+  }
+
+  /* ─── HERO ─── */
+  .hero {
+    padding: 80px 40px 60px;
+    max-width: 900px;
+    margin: 0 auto;
+    border-bottom: 1px solid var(--border);
+  }
+  .hero-label {
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 4vw, 46px);
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 24px;
+  }
+  .hero-sub {
+    font-size: 16px;
+    color: var(--muted);
+    max-width: 640px;
+    margin-bottom: 32px;
+  }
+  .meta-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .chip {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .chip span { color: var(--text); font-weight: 600; }
+
+  /* ─── NAV ─── */
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(15, 17, 23, 0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 40px;
+  }
+  .nav-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+  }
+  .nav-btn {
+    background: none;
+    border: none;
+    color: var(--muted);
+    padding: 16px 20px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+  }
+  .nav-btn:hover { color: var(--text); }
+  .nav-btn.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+
+  /* ─── SECTIONS ─── */
+  .section { display: none; }
+  .section.active { display: block; }
+
+  .page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 50px 40px;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .section-desc {
+    color: var(--muted);
+    font-size: 15px;
+    margin-bottom: 40px;
+    max-width: 600px;
+  }
+
+  /* ─── STAT GRID ─── */
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    margin-bottom: 48px;
+  }
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px 20px;
+  }
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .stat-label { font-size: 13px; color: var(--muted); }
+
+  /* ─── CHART CARD ─── */
+  .chart-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 30px;
+    margin-bottom: 24px;
+  }
+  .chart-card h3 {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: var(--text);
+  }
+  .chart-card p {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 24px;
+  }
+  .chart-wrap {
+    position: relative;
+    height: 280px;
+  }
+  .chart-wrap.tall { height: 360px; }
+
+  /* ─── TWO COL ─── */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  @media (max-width: 640px) { .two-col { grid-template-columns: 1fr; } }
+
+  /* ─── NEWS LIST ─── */
+  .news-list { display: flex; flex-direction: column; gap: 14px; }
+  .news-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 20px;
+    transition: border-color 0.2s;
+  }
+  .news-item:hover { border-color: var(--accent); }
+  .news-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+  }
+  .news-source {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--accent2);
+  }
+  .news-date { font-size: 12px; color: var(--muted); }
+  .news-tag {
+    font-size: 11px;
+    padding: 2px 9px;
+    border-radius: 10px;
+    background: rgba(200, 151, 74, 0.12);
+    color: var(--accent);
+    border: 1px solid rgba(200, 151, 74, 0.2);
+  }
+  .news-title {
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--text);
+  }
+  .news-title a {
+    color: inherit;
+    text-decoration: none;
+  }
+  .news-title a:hover { color: var(--accent2); }
+
+  /* ─── FINDINGS ─── */
+  .finding {
+    border-left: 3px solid var(--accent);
+    padding: 16px 20px;
+    margin-bottom: 16px;
+    background: var(--surface);
+    border-radius: 0 8px 8px 0;
+  }
+  .finding-num {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .finding-title { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+  .finding-text { font-size: 14px; color: var(--muted); line-height: 1.6; }
+  .finding.h2 { border-color: var(--accent2); }
+  .finding.h2 .finding-num { color: var(--accent2); }
+  .finding.h3 { border-color: var(--accent3); }
+  .finding.h3 .finding-num { color: var(--accent3); }
+  .finding.h4 { border-color: var(--danger); }
+  .finding.h4 .finding-num { color: var(--danger); }
+
+  /* ─── FRAME TABLE ─── */
+  .frame-table { width: 100%; border-collapse: collapse; }
+  .frame-table th {
+    text-align: left;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .frame-table td {
+    padding: 12px 16px;
+    font-size: 14px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  .frame-table tr:last-child td { border-bottom: none; }
+  .frame-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    display: inline-block; margin-right: 8px; vertical-align: middle;
+  }
+
+  /* ─── PROGRESS BAR ─── */
+  .progress-row { margin-bottom: 14px; }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    margin-bottom: 6px;
+    color: var(--text);
+  }
+  .progress-count { color: var(--muted); }
+  .progress-bar-bg {
+    background: var(--surface2);
+    height: 6px;
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    background: var(--accent);
+    transition: width 1s ease;
+  }
+
+  /* ─── QUOTE BOX ─── */
+  .quote-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px 28px;
+    margin-bottom: 20px;
+    position: relative;
+  }
+  .quote-box::before {
+    content: '"';
+    font-family: 'Playfair Display', serif;
+    font-size: 72px;
+    color: var(--accent);
+    opacity: 0.15;
+    position: absolute;
+    top: -10px;
+    left: 18px;
+    line-height: 1;
+  }
+  .quote-text {
+    font-size: 15px;
+    font-style: italic;
+    line-height: 1.7;
+    color: var(--text);
+    padding-left: 20px;
+    margin-bottom: 14px;
+  }
+  .quote-source { font-size: 13px; color: var(--muted); padding-left: 20px; }
+  .quote-source span { color: var(--accent2); }
+
+  /* ─── LEGEND ─── */
+  .legend { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 16px; }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); }
+  .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+  /* ─── FOOTER ─── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 30px 40px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 13px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-label">BAP Araştırma Projesi · 2020–2026</div>
+  <h1>Türkiye'nin Somali Politikasında<br>Yaydığı Mesajların Yapay Zeka<br>ile Belirlenmesi</h1>
+  <p class="hero-sub">Türkiye'nin Somali politikasına ilişkin Türk ve uluslararası medyada yer alan çerçeveleme örüntülerinin NLP ve nitel içerik analizi yöntemleriyle karşılaştırmalı incelemesi.</p>
+  <div class="meta-chips">
+    <div class="chip">Araştırmacı: <span>Doç. Dr. Ali Onur Tepeciklioğlu</span></div>
+    <div class="chip">Türk Medyası: <span>676 haber</span></div>
+    <div class="chip">Uluslararası Medya: <span>71 haber</span></div>
+    <div class="chip">Dönem: <span>2020 – 2026</span></div>
+  </div>
+</div>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <button class="nav-btn active" onclick="showTab('ozet')">Genel Bakış</button>
+    <button class="nav-btn" onclick="showTab('turk')">Türk Medyası</button>
+    <button class="nav-btn" onclick="showTab('uluslararasi')">Uluslararası Medya</button>
+    <button class="nav-btn" onclick="showTab('cerceveler')">Çerçeveler</button>
+    <button class="nav-btn" onclick="showTab('haberler')">Haber Örnekleri</button>
+    <button class="nav-btn" onclick="showTab('sonuclar')">Bulgular</button>
+  </div>
+</nav>
+
+<!-- ════════════════════════════ ÖZET ════════════════════════════ -->
+<section id="ozet" class="section active">
+<div class="page">
+
+  <div class="section-title">Genel Bakış</div>
+  <p class="section-desc">Projenin temel verileri ve araştırma tasarımına dair özet.</p>
+
+  <div class="stat-grid">
+    <div class="stat-card">
+      <div class="stat-num">676</div>
+      <div class="stat-label">Türk medyası haberi (2020–2025)</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">71</div>
+      <div class="stat-label">Uluslararası medya haberi</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">8</div>
+      <div class="stat-label">NMF konu kümesi (Türk medyası)</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">5</div>
+      <div class="stat-label">Tematik olay kümesi (Uluslararası)</div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="chart-card">
+      <h3>Türk Medyası — Yıllara Göre Haber Sayısı</h3>
+      <p>2023'te zirve: Somali seçimleri ve Türkiye-Somali ilişkilerindeki yoğunlaşma</p>
+      <div class="chart-wrap">
+        <canvas id="trYearChart"></canvas>
+      </div>
+    </div>
+    <div class="chart-card">
+      <h3>Uluslararası Medya — Yıllara Göre Haber Sayısı</h3>
+      <p>2024'te belirgin artış: Savunma anlaşması ve Etiyopya arabuluculuğu</p>
+      <div class="chart-wrap">
+        <canvas id="intlYearChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="chart-card">
+    <h3>Araştırma Sorusu ve Yöntem</h3>
+    <p>Türkiye'nin Somali politikasının uluslararası medyada yer alış biçimi ile Türkiye'nin bu politikaya ilişkin resmi ve yarı resmi söylemleri arasındaki benzerlikler ve farklılıklar.</p>
+    <table class="frame-table">
+      <tr><th>Veri Seti</th><th>Kaynak</th><th>Yöntem</th><th>n</th></tr>
+      <tr>
+        <td>Türk medyası</td>
+        <td>Media Cloud + web kazıma</td>
+        <td>TF-IDF + NMF konu modelleme</td>
+        <td>676</td>
+      </tr>
+      <tr>
+        <td>Uluslararası medya</td>
+        <td>Al Jazeera, DW, BBC, Reuters, Asharq Al-Awsat</td>
+        <td>Nitel içerik analizi + KWIC</td>
+        <td>71</td>
+      </tr>
+    </table>
+  </div>
+
+</div>
+</section>
+
+<!-- ════════════════════════════ TÜRK MEDYASI ════════════════════════════ -->
+<section id="turk" class="section">
+<div class="page">
+
+  <div class="section-title">Türk Medyası Analizi</div>
+  <p class="section-desc">676 haberden oluşan veri setinin NMF algoritması ile üretilen konu dağılımı ve kaynak analizi.</p>
+
+  <div class="two-col">
+    <div class="chart-card">
+      <h3>Konu Dağılımı (NMF — 8 Küme)</h3>
+      <p>Bölgesel siyaset ve Somaliland konuları en büyük kümeyi oluşturuyor</p>
+      <div class="chart-wrap tall">
+        <canvas id="trTopicChart"></canvas>
+      </div>
+    </div>
+    <div class="chart-card">
+      <h3>Haber Kategorisi Dağılımı</h3>
+      <p>Haberlerin büyük çoğunluğu (%81) siyaset kategorisinde</p>
+      <div class="chart-wrap tall">
+        <canvas id="trCatChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="chart-card">
+    <h3>En Çok Temsil Edilen Medya Kuruluşları</h3>
+    <p>Sol-sağ yelpazesinde 10+ farklı kaynak; ideolojik çeşitlilik sağlandı</p>
+    <div id="trSourceBars"></div>
+  </div>
+
+</div>
+</section>
+
+<!-- ════════════════════════════ ULUSLARARASI ════════════════════════════ -->
+<section id="uluslararasi" class="section">
+<div class="page">
+
+  <div class="section-title">Uluslararası Medya Analizi</div>
+  <p class="section-desc">71 İngilizce haber; Al Jazeera, DW, BBC, Reuters ve Asharq Al-Awsat yayın organları analiz edildi.</p>
+
+  <div class="two-col">
+    <div class="chart-card">
+      <h3>Yayın Organı Dağılımı</h3>
+      <p>Al Jazeera en yüksek paya sahip kuruluş</p>
+      <div class="chart-wrap">
+        <canvas id="intlSourceChart"></canvas>
+      </div>
+    </div>
+    <div class="chart-card">
+      <h3>Yıllara Göre Yayın Yoğunluğu</h3>
+      <p>2024 ve sonrası: Savunma anlaşması, arabuluculuk, Somaliland-İsrail krizi</p>
+      <div class="chart-wrap">
+        <canvas id="intlYearChart2"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="chart-card">
+    <h3>Tematik Olay Kümeleri</h3>
+    <p>Nitel kodlama sonucunda belirlenen 5 ana olay kümesi</p>
+    <table class="frame-table">
+      <tr>
+        <th>Küme</th>
+        <th>Dönem</th>
+        <th>n</th>
+        <th>Temel Çerçeve</th>
+      </tr>
+      <tr>
+        <td><span class="frame-dot" style="background:#c8974a"></span>Güvenlik Anlaşması Öncesi</td>
+        <td>2020–2023</td>
+        <td>15</td>
+        <td>Jeopolitik genişleme, petrol, güç rekabeti</td>
+      </tr>
+      <tr>
+        <td><span class="frame-dot" style="background:#5e8fde"></span>Güvenlik & Savunma Anlaşması</td>
+        <td>Şub. 2024</td>
+        <td>8</td>
+        <td>Stratejik ortaklık / eleştirel müdahale sesi</td>
+      </tr>
+      <tr>
+        <td><span class="frame-dot" style="background:#5ec499"></span>Etiyopya Arabuluculuğu</td>
+        <td>2024</td>
+        <td>14</td>
+        <td>Nötr/olumlu arabulucu; sorgulamacı alt metin</td>
+      </tr>
+      <tr>
+        <td><span class="frame-dot" style="background:#de5e5e"></span>Somaliland–İsrail Tanıma Krizi</td>
+        <td>Ara. 2025–Şub. 2026</td>
+        <td>18</td>
+        <td>Egemenlik savunuculuğu; Gazze bağlantısı</td>
+      </tr>
+      <tr>
+        <td><span class="frame-dot" style="background:#b05ee0"></span>Enerji & Deniz Kaynakları</td>
+        <td>2020 ve 2026</td>
+        <td>6</td>
+        <td>Kaynak odaklı; deniz gücü çerçevesi</td>
+      </tr>
+    </table>
+  </div>
+
+</div>
+</section>
+
+<!-- ════════════════════════════ ÇERÇEVELER ════════════════════════════ -->
+<section id="cerceveler" class="section">
+<div class="page">
+
+  <div class="section-title">Çerçeve Karşılaştırması</div>
+  <p class="section-desc">Türk ve uluslararası medyanın aynı olayları nasıl farklı çerçevelediğinin karşılaştırmalı analizi.</p>
+
+  <div class="two-col">
+    <div class="chart-card">
+      <h3>Türk Medyası — Baskın Çerçeveler</h3>
+      <p>İkili işbirliği, insani angajman ve kardeşlik çerçeveleri ön planda</p>
+      <div class="chart-wrap">
+        <canvas id="trFrameChart"></canvas>
+      </div>
+    </div>
+    <div class="chart-card">
+      <h3>Uluslararası Medya — Baskın Çerçeveler</h3>
+      <p>Jeopolitik rekabet ve stratejik aktör çerçeveleri daha belirgin</p>
+      <div class="chart-wrap">
+        <canvas id="intlFrameChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="chart-card">
+    <h3>Çerçeve Benzerlik ve Farklılık Matrisi</h3>
+    <p>Entman (1993) çerçeveleme bileşenleri üzerinden karşılaştırma</p>
+    <table class="frame-table">
+      <tr>
+        <th>Bileşen</th>
+        <th>Türk Medyası</th>
+        <th>Uluslararası Medya</th>
+        <th>Örtüşme</th>
+      </tr>
+      <tr>
+        <td><strong>Sorun Tanımı</strong></td>
+        <td>Somali'nin güvenlik ihtiyacı / insani kriz</td>
+        <td>Bölgesel güç rekabeti / kırılgan devlet</td>
+        <td style="color:var(--danger)">Düşük</td>
+      </tr>
+      <tr>
+        <td><strong>Nedensellik</strong></td>
+        <td>Tarihsel bağ, insani sorumluluk</td>
+        <td>Ticari/stratejik çıkar, bölgesel nüfuz</td>
+        <td style="color:var(--danger)">Düşük</td>
+      </tr>
+      <tr>
+        <td><strong>Ahlaki Değerlendirme</strong></td>
+        <td>Olumlu / destekleyici</td>
+        <td>Analitik / zaman zaman eleştirel</td>
+        <td style="color:var(--accent)">Kısmi</td>
+      </tr>
+      <tr>
+        <td><strong>Çözüm Önerisi</strong></td>
+        <td>İşbirliği ve kalkınma</td>
+        <td>Diyalog ve bölgesel denge</td>
+        <td style="color:var(--accent3)">Yüksek</td>
+      </tr>
+      <tr>
+        <td><strong>Olgusal İçerik</strong></td>
+        <td>Anlaşmalar, ziyaretler, yardımlar</td>
+        <td>Büyük ölçüde aynı</td>
+        <td style="color:var(--accent3)">Yüksek</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="chart-card">
+    <h3>Somali'nin Temsiliyeti: Karşılaştırma</h3>
+    <table class="frame-table">
+      <tr><th>Boyut</th><th>Türk Medyası</th><th>Uluslararası Medya</th></tr>
+      <tr>
+        <td>Ajanlık</td>
+        <td>Zımni alıcı / destek bekleyen</td>
+        <td>Aktif dış politika yürüten devlet</td>
+      </tr>
+      <tr>
+        <td>Kimlik</td>
+        <td>Kardeş/dost ülke</td>
+        <td>Stratejik partner veya kırılgan devlet</td>
+      </tr>
+      <tr>
+        <td>Gelecek</td>
+        <td>Türkiye katkısıyla kalkınan ülke</td>
+        <td>Çatışan bölgesel çıkarların arasındaki ülke</td>
+      </tr>
+    </table>
+  </div>
+
+</div>
+</section>
+
+<!-- ════════════════════════════ HABERLER ════════════════════════════ -->
+<section id="haberler" class="section">
+<div class="page">
+
+  <div class="section-title">Seçilmiş Haber Örnekleri</div>
+  <p class="section-desc">Veri setinden her iki medya sistemini temsil eden örnek haberler.</p>
+
+  <h3 style="font-size:13px; letter-spacing:2px; text-transform:uppercase; color:var(--accent); margin-bottom:20px;">Uluslararası Medya — Öne Çıkan Haberler</h3>
+
+  <div class="news-list" style="margin-bottom:40px">
+    <div class="news-item">
+      <div class="news-meta">
+        <span class="news-source">DW</span>
+        <span class="news-date">19 Ocak 2020</span>
+        <span class="news-tag">Jeopolitik</span>
+      </div>
+      <div class="news-title"><a href="https://www.dw.com/en/turkey-sets-its-sights-on-the-horn-of-africa/a-52111261" target="_blank">Turkey sets its sights on the Horn of Africa</a></div>
+    </div>
+    <div class="news-item">
+      <div class="news-meta">
+        <span class="news-source">Al Jazeera</span>
+        <span class="news-date">23 Haziran 2020</span>
+        <span class="news-tag">Güvenlik</span>
+      </div>
+      <div class="news-title"><a href="https://www.aljazeera.com/news/2020/06/al-shabab-claims-suicide-attack-turkish-base-somalia-200623091635465.html" target="_blank">Al-Shabab claims suicide attack outside Turkish base in Somalia</a></div>
+    </div>
+    <div class="news-item">
+      <div class="news-meta">
+        <span class="news-source">DW</span>
+        <span class="news-date">28 Ekim 2022</span>
+        <span class="news-tag">Savunma</span>
+      </div>
+      <div class="news-title"><a href="https://www.dw.com/en/turkey-deepens-its-defense-diplomacy-in-africa/a-63586344" target="_blank">Turkey deepens its defense diplomacy in Africa</a></div>
+    </div>
+    <div class="news-item">
+      <div class="news-meta">
+        <span class="news-source">DW</span>
+        <span class="news-date">26 Şubat 2024</span>
+        <span class="news-tag">Savunma Anlaşması</span>
+      </div>
+      <div class="news-title"><a href="https://www.dw.com/en/somalia-turkey-security-deal-how-does-it-impact-ethiopia/a-68375405" target="_blank">Somalia-Turkey security deal: How does it impact Ethiopia?</a></div>
+    </div>
+    <div class="news-item">
+      <div class="news-meta">
+        <span class="news-source">Al Jazeera</span>
+        <span class="news-date">30 Aralık 2025</span>
+        <span class="news-tag">Somaliland Krizi</span>
+      </div>
+      <div class="news-title"><a href="https://www.aljazeera.com/news/2025/12/30/trkiyes-erdogan-calls-israels-somaliland-recognition-unacceptable" target="_blank">Türkiye's Erdogan calls Israel's Somaliland recognition 'unacceptable'</a></div>
+    </div>
+  </div>
+
+  <div class="quote-box">
+    <p class="quote-text">With the new deal, it means that the kind of control that Turkey will have in Somalia has become expansive and unlimited... It creates a lot of contention. Because as Africans, we are concerned about a European country having that kind of influence or military power in the Horn of Africa.</p>
+    <p class="quote-source"><span>Mohamed Gaas, Raad Barış Araştırma Enstitüsü</span> — DW, 26 Şubat 2024</p>
+  </div>
+
+  <div class="quote-box">
+    <p class="quote-text">Preserving the unity and integrity of Somalia in all circumstances holds special importance in our view. Israel's decision to recognise Somaliland is illegitimate and unacceptable.</p>
+    <p class="quote-source"><span>Cumhurbaşkanı Recep Tayyip Erdoğan</span> — Al Jazeera, 30 Aralık 2025</p>
+  </div>
+
+  <div class="quote-box">
+    <p class="quote-text">Turkey sent its deep-sea drilling vessel Cagri Bey to Somalia on Sunday for what its energy minister said would be Ankara's first offshore exploration mission outside its maritime zone... it would be escorted by three Turkish naval warships.</p>
+    <p class="quote-source"><span>Reuters</span> — 15 Şubat 2026</p>
+  </div>
+
+  <h3 style="font-size:13px; letter-spacing:2px; text-transform:uppercase; color:var(--accent2); margin-bottom:20px; margin-top:40px;">Türk Medyası — Konu Kümelerine Göre Örnek Haberler</h3>
+
+  <div class="news-list">
+    <div class="news-item">
+      <div class="news-meta">
+        <span class="news-source" style="color:var(--accent2)">dirilispostasi.com</span>
+        <span class="news-date">12 Nisan 2025</span>
+        <span class="news-tag" style="color:var(--accent2); border-color:rgba(94,143,222,0.3); background:rgba(94,143,222,0.08)">İkili İşbirliği</span>
+      </div>
+      <div class="news-title"><a href="https://www.dirilispostasi.com/bakan-fidan-somali-cumhurbaskani-hasan-seyh-mahmud-ile-gorustu" target="_blank">Bakan Fidan, Somali Cumhurbaşkanı Hasan Şeyh Mahmud ile görüştü</a></div>
+    </div>
+    <div class="news-item">
+      <div class="news-meta">
+        <span class="news-source" style="color:var(--accent2)">trthaber.com</span>
+        <span class="news-date">9 Nisan 2025</span>
+        <span class="news-tag" style="color:var(--accent2); border-color:rgba(94,143,222,0.3); background:rgba(94,143,222,0.08)">Güvenlik</span>
+      </div>
+      <div class="news-title"><a href="https://www.trthaber.com/haber/dunya/somali-ordusu-es-sebabin-ele-gecirdigi-bolgeleri-yeniden-kontrol-altina-aliyor-903462.html" target="_blank">Somali ordusu, Eş-Şebab'ın ele geçirdiği bölgeleri yeniden kontrol altına alıyor</a></div>
+    </div>
+    <div class="news-item">
+      <div class="news-meta">
+        <span class="news-source" style="color:var(--accent2)">haberport.com</span>
+        <span class="news-date">7 Şubat 2025</span>
+        <span class="news-tag" style="color:var(--accent2); border-color:rgba(94,143,222,0.3); background:rgba(94,143,222,0.08)">Enerji</span>
+      </div>
+      <div class="news-title"><a href="https://www.haberport.com/ekonomi/oruc-reis-somali-denizi-nde-sismik-calismalarini-yuzde-50-tamamladi-203524h" target="_blank">Oruç Reis, Somali Denizi'nde Sismik Çalışmalarını Yüzde 50 Tamamladı</a></div>
+    </div>
+    <div class="news-item">
+      <div class="news-meta">
+        <span class="news-source" style="color:var(--accent2)">aydinlik.com.tr</span>
+        <span class="news-date">16 Nisan 2025</span>
+        <span class="news-tag" style="color:var(--accent2); border-color:rgba(94,143,222,0.3); background:rgba(94,143,222,0.08)">Bölgesel Siyaset</span>
+      </div>
+      <div class="news-title"><a href="https://www.aydinlik.com.tr/haber/somali-ve-somaliland-arasindaki-eyalet-krizi-buyuyor-521614" target="_blank">Somali ve Somaliland arasındaki eyalet krizi büyüyor</a></div>
+    </div>
+    <div class="news-item">
+      <div class="news-meta">
+        <span class="news-source" style="color:var(--accent2)">turkiyegazetesi.com.tr</span>
+        <span class="news-date">24 Ocak 2025</span>
+        <span class="news-tag" style="color:var(--accent2); border-color:rgba(94,143,222,0.3); background:rgba(94,143,222,0.08)">Uzay / Enerji</span>
+      </div>
+      <div class="news-title"><a href="https://www.turkiyegazetesi.com.tr/dunya/somali-yetkililer-duyurdu-turkiyenin-roket-ussu-insaati-tamamlanmak-uzere-1089014" target="_blank">Somali yetkililer duyurdu! "Türkiye'nin roket üssü inşaatı tamamlanmak üzere"</a></div>
+    </div>
+  </div>
+
+</div>
+</section>
+
+<!-- ════════════════════════════ SONUÇLAR ════════════════════════════ -->
+<section id="sonuclar" class="section">
+<div class="page">
+
+  <div class="section-title">Ana Bulgular</div>
+  <p class="section-desc">Dört hipotezin analiz bulguları kapsamında değerlendirilmesi.</p>
+
+  <div class="finding">
+    <div class="finding-num">H1 — Kısmi Destek</div>
+    <div class="finding-title">Uluslararası medya Türkiye'nin söylemiyle kısmen örtüşüyor</div>
+    <div class="finding-text">Diplomatik ortaklık, terörle mücadele ve insani angajman unsurları hem Türk hem de uluslararası medyada yer almaktadır. Etiyopya arabuluculuğu ve Somaliland krizindeki örtüşme bunu somutlaştırmaktadır.</div>
+  </div>
+
+  <div class="finding h2">
+    <div class="finding-num">H2 — Güçlü Destek</div>
+    <div class="finding-title">Uluslararası medya anlamlı biçimde farklı bir çerçeve benimsiyor</div>
+    <div class="finding-text">Bu farklılık yalnızca hangi haberlerin yer aldığıyla değil, aynı haberlerin nasıl konumlandırıldığıyla ilgilidir. Güç rekabeti, bağımsız uzman görüşleri ve eleştirel analiz, uluslararası medyada belirgindir.</div>
+  </div>
+
+  <div class="finding h3">
+    <div class="finding-num">H3 — Doğrulandı</div>
+    <div class="finding-title">"Askeri varlık, bölgesel güç, etki alanı genişletme" çerçevesi güçlü biçimde temsil ediliyor</div>
+    <div class="finding-text">Bu çerçeve olumsuz bir ton taşımamakta; çoğu zaman nötr veya analitik bir değerlendirme olarak sunulmaktadır. Türk medyasında ise bu söylem biçimi neredeyse hiç yer bulmamaktadır.</div>
+  </div>
+
+  <div class="finding h4">
+    <div class="finding-num">H4 — Kısmi Destek</div>
+    <div class="finding-title">"İnsani diplomasi, istikrar, işbirliği" çerçevesi uluslararası medyada ikincil konumda</div>
+    <div class="finding-text">Arabuluculuk haberlerinde belirginleşen bu çerçeve, Türk medyasındaki baskın konumuna ulaşamamaktadır. Uluslararası medyada insani anlatı, stratejik çıkar yorumlamalarıyla bir arada var olmaktadır.</div>
+  </div>
+
+  <div class="chart-card" style="margin-top:32px">
+    <h3>Temel Bulgular Özeti</h3>
+    <table class="frame-table">
+      <tr>
+        <th>Boyut</th>
+        <th>Türk Medyası</th>
+        <th>Uluslararası Medya</th>
+      </tr>
+      <tr>
+        <td>Türkiye'nin rolü</td>
+        <td>İnsani, destekleyici, kardeş</td>
+        <td>Stratejik, güçlü, hesap soran</td>
+      </tr>
+      <tr>
+        <td>Somali'nin rolü</td>
+        <td>Zımni alıcı / destek bekleyen</td>
+        <td>Aktif dış politika aktörü</td>
+      </tr>
+      <tr>
+        <td>Motivasyon çerçevesi</td>
+        <td>Değer ve sorumluluk temelli</td>
+        <td>Ticari ve ulusal çıkar temelli</td>
+      </tr>
+      <tr>
+        <td>Olgusal örtüşme</td>
+        <td colspan="2" style="text-align:center;color:var(--accent3)">YÜKSEK — Olaylar büyük ölçüde aynı şekilde aktarılıyor</td>
+      </tr>
+      <tr>
+        <td>Anlamsal örtüşme</td>
+        <td colspan="2" style="text-align:center;color:var(--danger)">DÜŞÜK — Neden ve ne anlam ifade ettiği farklılaşıyor</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="chart-card">
+    <h3>Kısıtlılıklar</h3>
+    <div class="finding-text" style="padding: 0">
+      Uluslararası veri setinin 71 haberle sınırlı kalması istatistiksel genellemeyi güçleştirmektedir. NMF konu kümelerinin araştırmacı tarafından etiketlenmesi yorumlama payı içermektedir. Her iki veri seti de dijital çevrimiçi medyayla sınırlıdır; televizyon ve sosyal medya kapsamın dışındadır.
+    </div>
+  </div>
+
+</div>
+</section>
+
+<footer>
+  <p>Türkiye'nin Somali Politikasında Yaydığı Mesajların Yapay Zeka ile Belirlenmesi · BAP Araştırma Projesi</p>
+  <p style="margin-top:6px">Doç. Dr. Ali Onur Tepeciklioğlu · Veri: 2020–2026</p>
+</footer>
+
+<script>
+// ═══ DATA ═══
+const trYearData = [{"year":2020,"count":69},{"year":2021,"count":72},{"year":2022,"count":103},{"year":2023,"count":188},{"year":2024,"count":187},{"year":2025,"count":57}];
+const intlYearData = [{"year":2020,"count":12},{"year":2021,"count":2},{"year":2022,"count":6},{"year":2023,"count":5},{"year":2024,"count":22},{"year":2025,"count":15},{"year":2026,"count":9}];
+const trTopicData = [
+  {"topic":"Diplomatik İlişkiler /\nSomali Başkanlığı","count":49},
+  {"topic":"Türkiye-Somali\nİkili İşbirliği","count":97},
+  {"topic":"El-Şebab /\nGüvenlik Operasyonları","count":111},
+  {"topic":"Enerji &\nSavunma Anlaşmaları","count":47},
+  {"topic":"Bölgesel Siyaset\n& Somaliland","count":209},
+  {"topic":"İnsani Yardım\n& Kalkınma","count":80},
+  {"topic":"Deniz Güvenliği\n& TSK Görevi","count":41},
+  {"topic":"Diğer / Çeşitli","count":42}
+];
+const trCatData = [{"category":"Siyaset","count":546},{"category":"Ekonomi","count":68},{"category":"Sağlık","count":46},{"category":"Kültür","count":15},{"category":"Spor","count":1}];
+const trSourceData = [{"name":"aa.com.tr","count":114},{"name":"t24.com.tr","count":107},{"name":"haberport.com","count":48},{"name":"cumhuriyet.com.tr","count":48},{"name":"hurriyet.com.tr","count":43},{"name":"trthaber.com","count":39},{"name":"sabah.com.tr","count":35},{"name":"haberturk.com","count":30},{"name":"ntv.com.tr","count":28},{"name":"milliyet.com.tr","count":24}];
+const intlSourceData = [{"name":"Al Jazeera","count":29},{"name":"DW","count":13},{"name":"BBC","count":12},{"name":"Asharq Al-Awsat","count":9},{"name":"Reuters","count":6},{"name":"CGTN","count":2}];
+
+// ═══ CHART DEFAULTS ═══
+Chart.defaults.color = '#8a8fa8';
+Chart.defaults.font.family = "'Source Sans 3', sans-serif";
+
+const COLORS = ['#c8974a','#5e8fde','#5ec499','#de5e5e','#b05ee0','#e0a85e','#5ec4c8','#a8c85e'];
+
+function barOpts(horizontal) {
+  return {
+    indexAxis: horizontal ? 'y' : 'x',
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false }, tooltip: { backgroundColor: '#1a1d27', borderColor: '#2e3347', borderWidth: 1 } },
+    scales: {
+      x: { grid: { color: '#2e3347' }, ticks: { color: '#8a8fa8' } },
+      y: { grid: { color: '#2e3347' }, ticks: { color: '#8a8fa8' } }
+    }
+  };
+}
+
+// TR Year
+new Chart(document.getElementById('trYearChart'), {
+  type: 'bar',
+  data: {
+    labels: trYearData.map(d=>d.year),
+    datasets: [{ data: trYearData.map(d=>d.count), backgroundColor: '#c8974a', borderRadius: 4, borderSkipped: false }]
+  },
+  options: barOpts(false)
+});
+
+// INTL Year
+new Chart(document.getElementById('intlYearChart'), {
+  type: 'bar',
+  data: {
+    labels: intlYearData.map(d=>d.year),
+    datasets: [{ data: intlYearData.map(d=>d.count), backgroundColor: '#5e8fde', borderRadius: 4, borderSkipped: false }]
+  },
+  options: barOpts(false)
+});
+
+// TR Topics (horizontal)
+new Chart(document.getElementById('trTopicChart'), {
+  type: 'bar',
+  data: {
+    labels: trTopicData.map(d=>d.topic),
+    datasets: [{ data: trTopicData.map(d=>d.count), backgroundColor: COLORS, borderRadius: 4, borderSkipped: false }]
+  },
+  options: {
+    ...barOpts(true),
+    scales: {
+      x: { grid: { color: '#2e3347' }, ticks: { color: '#8a8fa8' } },
+      y: { grid: { display: false }, ticks: { color: '#e8e4dc', font: { size: 12 } } }
+    }
+  }
+});
+
+// TR Categories (doughnut)
+new Chart(document.getElementById('trCatChart'), {
+  type: 'doughnut',
+  data: {
+    labels: trCatData.map(d=>d.category),
+    datasets: [{ data: trCatData.map(d=>d.count), backgroundColor: COLORS, borderWidth: 0 }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    cutout: '60%',
+    plugins: {
+      legend: { position: 'bottom', labels: { color: '#8a8fa8', padding: 14, font: { size: 12 } } },
+      tooltip: { backgroundColor: '#1a1d27', borderColor: '#2e3347', borderWidth: 1 }
+    }
+  }
+});
+
+// TR Source Bars (manual)
+const maxCount = Math.max(...trSourceData.map(d=>d.count));
+const trSourceContainer = document.getElementById('trSourceBars');
+trSourceData.forEach((d,i) => {
+  const pct = (d.count / maxCount * 100).toFixed(1);
+  trSourceContainer.innerHTML += `
+    <div class="progress-row">
+      <div class="progress-label">
+        <span>${d.name}</span>
+        <span class="progress-count">${d.count}</span>
+      </div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" style="width:${pct}%; background:${COLORS[i % COLORS.length]}"></div>
+      </div>
+    </div>`;
+});
+
+// INTL Source (pie)
+new Chart(document.getElementById('intlSourceChart'), {
+  type: 'doughnut',
+  data: {
+    labels: intlSourceData.map(d=>d.name),
+    datasets: [{ data: intlSourceData.map(d=>d.count), backgroundColor: COLORS, borderWidth: 0 }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    cutout: '55%',
+    plugins: {
+      legend: { position: 'bottom', labels: { color: '#8a8fa8', padding: 12, font: { size: 12 } } },
+      tooltip: { backgroundColor: '#1a1d27', borderColor: '#2e3347', borderWidth: 1 }
+    }
+  }
+});
+
+// INTL Year 2
+new Chart(document.getElementById('intlYearChart2'), {
+  type: 'bar',
+  data: {
+    labels: intlYearData.map(d=>d.year),
+    datasets: [{ data: intlYearData.map(d=>d.count), backgroundColor: '#5e8fde', borderRadius: 4 }]
+  },
+  options: barOpts(false)
+});
+
+// Frame charts
+new Chart(document.getElementById('trFrameChart'), {
+  type: 'radar',
+  data: {
+    labels: ['İnsani / Dayanışma','Güvenlik / Destek','Kalkınma / Altyapı','Diplomatik Ortaklık','Enerji / Savunma Sanayi','Bölgesel Güç'],
+    datasets: [{
+      label: 'Türk Medyası',
+      data: [85, 70, 65, 90, 50, 20],
+      backgroundColor: 'rgba(200,151,74,0.2)',
+      borderColor: '#c8974a',
+      pointBackgroundColor: '#c8974a',
+      borderWidth: 2
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false }, tooltip: { backgroundColor: '#1a1d27' } },
+    scales: {
+      r: {
+        grid: { color: '#2e3347' },
+        angleLines: { color: '#2e3347' },
+        pointLabels: { color: '#8a8fa8', font: { size: 11 } },
+        ticks: { display: false },
+        min: 0, max: 100
+      }
+    }
+  }
+});
+
+new Chart(document.getElementById('intlFrameChart'), {
+  type: 'radar',
+  data: {
+    labels: ['İnsani / Dayanışma','Güvenlik / Destek','Kalkınma / Altyapı','Diplomatik Ortaklık','Enerji / Savunma Sanayi','Bölgesel Güç'],
+    datasets: [{
+      label: 'Uluslararası Medya',
+      data: [40, 65, 45, 75, 70, 80],
+      backgroundColor: 'rgba(94,143,222,0.2)',
+      borderColor: '#5e8fde',
+      pointBackgroundColor: '#5e8fde',
+      borderWidth: 2
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false }, tooltip: { backgroundColor: '#1a1d27' } },
+    scales: {
+      r: {
+        grid: { color: '#2e3347' },
+        angleLines: { color: '#2e3347' },
+        pointLabels: { color: '#8a8fa8', font: { size: 11 } },
+        ticks: { display: false },
+        min: 0, max: 100
+      }
+    }
+  }
+});
+
+// ═══ TAB NAV ═══
+function showTab(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
